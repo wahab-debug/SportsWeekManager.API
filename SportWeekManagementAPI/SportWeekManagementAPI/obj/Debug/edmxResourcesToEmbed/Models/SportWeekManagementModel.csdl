@@ -1,0 +1,324 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="SportsManagementDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Event">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="eventname" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="year" Type="Int32" />
+    <Property Name="user_id" Type="Int32" />
+    <Property Name="start_date" Type="DateTime" Precision="0" />
+    <Property Name="end_date" Type="DateTime" Precision="0" />
+    <NavigationProperty Name="User" Relationship="Self.FK__Event__user_id__4CA06362" FromRole="Event" ToRole="Users" />
+    <NavigationProperty Name="Sports" Relationship="Self.FK__Sport__event_id__5070F446" FromRole="Event" ToRole="Sport" />
+  </EntityType>
+  <EntityType Name="gallery">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="path" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+    <Property Name="match_id" Type="Int32" />
+    <NavigationProperty Name="Match" Relationship="Self.FK__gallery__match_i__5CD6CB2B" FromRole="gallery" ToRole="Match" />
+  </EntityType>
+  <EntityType Name="Match">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="first_half_score" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="second_half_score" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="status" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="comments" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="sport_id" Type="Int32" />
+    <NavigationProperty Name="galleries" Relationship="Self.FK__gallery__match_i__5CD6CB2B" FromRole="Match" ToRole="gallery" />
+    <NavigationProperty Name="Sport" Relationship="Self.FK__Match__sport_id__59FA5E80" FromRole="Match" ToRole="Sport" />
+    <NavigationProperty Name="Schedules" Relationship="Self.FK__Schedule__match___619B8048" FromRole="Match" ToRole="Schedule" />
+  </EntityType>
+  <EntityType Name="Player">
+    <Key>
+      <PropertyRef Name="reg_number" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="reg_number" Type="Int32" Nullable="false" />
+    <Property Name="role" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="team_id" Type="Int32" />
+    <NavigationProperty Name="Team" Relationship="Self.FK__Player__team_id__571DF1D5" FromRole="Player" ToRole="Team" />
+  </EntityType>
+  <EntityType Name="Schedule">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="team1_id" Type="Int32" />
+    <Property Name="team2_id" Type="Int32" />
+    <Property Name="match_id" Type="Int32" />
+    <Property Name="date" Type="DateTime" Precision="0" />
+    <Property Name="time" Type="Time" Precision="7" />
+    <NavigationProperty Name="Match" Relationship="Self.FK__Schedule__match___619B8048" FromRole="Schedule" ToRole="Match" />
+    <NavigationProperty Name="Team" Relationship="Self.FK__Schedule__team1___5FB337D6" FromRole="Schedule" ToRole="Team" />
+    <NavigationProperty Name="Team1" Relationship="Self.FK__Schedule__team2___60A75C0F" FromRole="Schedule" ToRole="Team" />
+    <NavigationProperty Name="venues" Relationship="Self.FK__venue__schedule___6477ECF3" FromRole="Schedule" ToRole="venue" />
+  </EntityType>
+  <EntityType Name="Sport">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="cric_over" Type="Int32" />
+    <Property Name="cric_ball" Type="Int32" />
+    <Property Name="user_id" Type="Int32" />
+    <Property Name="event_id" Type="Int32" />
+    <Property Name="rule" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Event" Relationship="Self.FK__Sport__event_id__5070F446" FromRole="Sport" ToRole="Event" />
+    <NavigationProperty Name="Matches" Relationship="Self.FK__Match__sport_id__59FA5E80" FromRole="Sport" ToRole="Match" />
+    <NavigationProperty Name="User" Relationship="Self.FK__Sport__user_id__4F7CD00D" FromRole="Sport" ToRole="Users" />
+    <NavigationProperty Name="Teams" Relationship="Self.FK__Team__sport_id__5441852A" FromRole="Sport" ToRole="Team" />
+  </EntityType>
+  <EntityType Name="Team">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="semester" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="isRegistered" Type="Int32" />
+    <Property Name="no_players" Type="Int32" />
+    <Property Name="wins" Type="Int32" />
+    <Property Name="losses" Type="Int32" />
+    <Property Name="user_id" Type="Int32" />
+    <Property Name="sport_id" Type="Int32" />
+    <NavigationProperty Name="Players" Relationship="Self.FK__Player__team_id__571DF1D5" FromRole="Team" ToRole="Player" />
+    <NavigationProperty Name="Schedules" Relationship="Self.FK__Schedule__team1___5FB337D6" FromRole="Team" ToRole="Schedule" />
+    <NavigationProperty Name="Schedules1" Relationship="Self.FK__Schedule__team2___60A75C0F" FromRole="Team" ToRole="Schedule" />
+    <NavigationProperty Name="Sport" Relationship="Self.FK__Team__sport_id__5441852A" FromRole="Team" ToRole="Sport" />
+    <NavigationProperty Name="User" Relationship="Self.FK__Team__user_id__534D60F1" FromRole="Team" ToRole="Users" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="registration_no" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="password" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="role" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Events" Relationship="Self.FK__Event__user_id__4CA06362" FromRole="Users" ToRole="Event" />
+    <NavigationProperty Name="Sports" Relationship="Self.FK__Sport__user_id__4F7CD00D" FromRole="Users" ToRole="Sport" />
+    <NavigationProperty Name="Teams" Relationship="Self.FK__Team__user_id__534D60F1" FromRole="Users" ToRole="Team" />
+  </EntityType>
+  <EntityType Name="venue">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="schedule_id" Type="Int32" />
+    <NavigationProperty Name="Schedule" Relationship="Self.FK__venue__schedule___6477ECF3" FromRole="venue" ToRole="Schedule" />
+  </EntityType>
+  <Association Name="FK__Event__user_id__4CA06362">
+    <End Role="Users" Type="Self.User" Multiplicity="0..1" />
+    <End Role="Event" Type="Self.Event" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Event">
+        <PropertyRef Name="user_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Sport__event_id__5070F446">
+    <End Role="Event" Type="Self.Event" Multiplicity="0..1" />
+    <End Role="Sport" Type="Self.Sport" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Event">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Sport">
+        <PropertyRef Name="event_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__gallery__match_i__5CD6CB2B">
+    <End Role="Match" Type="Self.Match" Multiplicity="0..1" />
+    <End Role="gallery" Type="Self.gallery" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Match">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="gallery">
+        <PropertyRef Name="match_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Match__sport_id__59FA5E80">
+    <End Role="Sport" Type="Self.Sport" Multiplicity="0..1" />
+    <End Role="Match" Type="Self.Match" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Sport">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Match">
+        <PropertyRef Name="sport_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Schedule__match___619B8048">
+    <End Role="Match" Type="Self.Match" Multiplicity="0..1" />
+    <End Role="Schedule" Type="Self.Schedule" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Match">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Schedule">
+        <PropertyRef Name="match_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Player__team_id__571DF1D5">
+    <End Role="Team" Type="Self.Team" Multiplicity="0..1" />
+    <End Role="Player" Type="Self.Player" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Team">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Player">
+        <PropertyRef Name="team_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Schedule__team1___5FB337D6">
+    <End Role="Team" Type="Self.Team" Multiplicity="0..1" />
+    <End Role="Schedule" Type="Self.Schedule" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Team">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Schedule">
+        <PropertyRef Name="team1_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Schedule__team2___60A75C0F">
+    <End Role="Team" Type="Self.Team" Multiplicity="0..1" />
+    <End Role="Schedule" Type="Self.Schedule" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Team">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Schedule">
+        <PropertyRef Name="team2_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__venue__schedule___6477ECF3">
+    <End Role="Schedule" Type="Self.Schedule" Multiplicity="0..1" />
+    <End Role="venue" Type="Self.venue" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Schedule">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="venue">
+        <PropertyRef Name="schedule_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Sport__user_id__4F7CD00D">
+    <End Role="Users" Type="Self.User" Multiplicity="0..1" />
+    <End Role="Sport" Type="Self.Sport" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Sport">
+        <PropertyRef Name="user_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Team__sport_id__5441852A">
+    <End Role="Sport" Type="Self.Sport" Multiplicity="0..1" />
+    <End Role="Team" Type="Self.Team" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Sport">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Team">
+        <PropertyRef Name="sport_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Team__user_id__534D60F1">
+    <End Role="Users" Type="Self.User" Multiplicity="0..1" />
+    <End Role="Team" Type="Self.Team" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Team">
+        <PropertyRef Name="user_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="SportsManagementDBEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Events" EntityType="Self.Event" />
+    <EntitySet Name="galleries" EntityType="Self.gallery" />
+    <EntitySet Name="Matches" EntityType="Self.Match" />
+    <EntitySet Name="Players" EntityType="Self.Player" />
+    <EntitySet Name="Schedules" EntityType="Self.Schedule" />
+    <EntitySet Name="Sports" EntityType="Self.Sport" />
+    <EntitySet Name="Teams" EntityType="Self.Team" />
+    <EntitySet Name="Users" EntityType="Self.User" />
+    <EntitySet Name="venues" EntityType="Self.venue" />
+    <AssociationSet Name="FK__Event__user_id__4CA06362" Association="Self.FK__Event__user_id__4CA06362">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="Event" EntitySet="Events" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Sport__event_id__5070F446" Association="Self.FK__Sport__event_id__5070F446">
+      <End Role="Event" EntitySet="Events" />
+      <End Role="Sport" EntitySet="Sports" />
+    </AssociationSet>
+    <AssociationSet Name="FK__gallery__match_i__5CD6CB2B" Association="Self.FK__gallery__match_i__5CD6CB2B">
+      <End Role="Match" EntitySet="Matches" />
+      <End Role="gallery" EntitySet="galleries" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Match__sport_id__59FA5E80" Association="Self.FK__Match__sport_id__59FA5E80">
+      <End Role="Sport" EntitySet="Sports" />
+      <End Role="Match" EntitySet="Matches" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Schedule__match___619B8048" Association="Self.FK__Schedule__match___619B8048">
+      <End Role="Match" EntitySet="Matches" />
+      <End Role="Schedule" EntitySet="Schedules" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Player__team_id__571DF1D5" Association="Self.FK__Player__team_id__571DF1D5">
+      <End Role="Team" EntitySet="Teams" />
+      <End Role="Player" EntitySet="Players" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Schedule__team1___5FB337D6" Association="Self.FK__Schedule__team1___5FB337D6">
+      <End Role="Team" EntitySet="Teams" />
+      <End Role="Schedule" EntitySet="Schedules" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Schedule__team2___60A75C0F" Association="Self.FK__Schedule__team2___60A75C0F">
+      <End Role="Team" EntitySet="Teams" />
+      <End Role="Schedule" EntitySet="Schedules" />
+    </AssociationSet>
+    <AssociationSet Name="FK__venue__schedule___6477ECF3" Association="Self.FK__venue__schedule___6477ECF3">
+      <End Role="Schedule" EntitySet="Schedules" />
+      <End Role="venue" EntitySet="venues" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Sport__user_id__4F7CD00D" Association="Self.FK__Sport__user_id__4F7CD00D">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="Sport" EntitySet="Sports" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Team__sport_id__5441852A" Association="Self.FK__Team__sport_id__5441852A">
+      <End Role="Sport" EntitySet="Sports" />
+      <End Role="Team" EntitySet="Teams" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Team__user_id__534D60F1" Association="Self.FK__Team__user_id__534D60F1">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="Team" EntitySet="Teams" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
