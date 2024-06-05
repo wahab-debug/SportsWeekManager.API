@@ -93,7 +93,7 @@ namespace SportWeekManagementAPI.Controllers
                 }
                 db.Entry(original).State = System.Data.Entity.EntityState.Deleted;
                 db.SaveChanges();
-                return Request.CreateResponse(HttpStatusCode.OK, "Venue Deleted");
+                return Request.CreateResponse(HttpStatusCode.OK, "Venue Deleted successfully");
 
 
 
