@@ -13,12 +13,13 @@ namespace SportsWeekManager.API.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class venue
+    public partial class gallery
     {
         public int id { get; set; }
-        public string name { get; set; }
-        public Nullable<int> schedule_id { get; set; }
+        public string path { get; set; }
+        public Nullable<int> match_id { get; set; }
+        public Nullable<System.DateTime> Date { get; set; }
 
-        [JsonIgnore]public virtual Schedule Schedule { get; set; }
+        [JsonIgnore]public virtual Match Match { get; set; }
     }
 }

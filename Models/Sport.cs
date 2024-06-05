@@ -9,6 +9,7 @@
 
 namespace SportsWeekManager.API.Models
 {
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     
@@ -18,6 +19,7 @@ namespace SportsWeekManager.API.Models
         public Sport()
         {
             this.Matches = new HashSet<Match>();
+            this.Playerteaminfoes = new HashSet<Playerteaminfo>();
             this.Teams = new HashSet<Team>();
         }
     
@@ -28,12 +30,14 @@ namespace SportsWeekManager.API.Models
         public Nullable<int> user_id { get; set; }
         public Nullable<int> event_id { get; set; }
         public string rule { get; set; }
-    
-        public virtual Event Event { get; set; }
+
+        [JsonIgnore]public virtual Event Event { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Match> Matches { get; set; }
-        public virtual User User { get; set; }
+        [JsonIgnore]public virtual ICollection<Match> Matches { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Team> Teams { get; set; }
+        [JsonIgnore]public virtual ICollection<Playerteaminfo> Playerteaminfoes { get; set; }
+        [JsonIgnore]public virtual User User { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [JsonIgnore]public virtual ICollection<Team> Teams { get; set; }
     }
 }

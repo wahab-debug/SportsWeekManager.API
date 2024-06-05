@@ -9,6 +9,7 @@
 
 namespace SportsWeekManager.API.Models
 {
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     
@@ -17,6 +18,9 @@ namespace SportsWeekManager.API.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Match()
         {
+            this.Comments = new HashSet<Comment>();
+            this.favourites = new HashSet<favourite>();
+            this.galleries = new HashSet<gallery>();
             this.Schedules = new HashSet<Schedule>();
         }
     
@@ -24,11 +28,17 @@ namespace SportsWeekManager.API.Models
         public string first_half_score { get; set; }
         public string second_half_score { get; set; }
         public string status { get; set; }
-        public string comments { get; set; }
         public Nullable<int> sport_id { get; set; }
+        public string round { get; set; }
     
-        public virtual Sport Sport { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Schedule> Schedules { get; set; }
+        [JsonIgnore]public virtual ICollection<Comment> Comments { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [JsonIgnore]public virtual ICollection<favourite> favourites { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [JsonIgnore]public virtual ICollection<gallery> galleries { get; set; }
+        [JsonIgnore]public virtual Sport Sport { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [JsonIgnore]public virtual ICollection<Schedule> Schedules { get; set; }
     }
 }

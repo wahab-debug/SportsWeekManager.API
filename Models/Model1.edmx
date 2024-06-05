@@ -5,6 +5,15 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
       <Schema Namespace="SportsManagementDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Comment">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="description" Type="varchar(max)" />
+          <Property Name="user_id" Type="int" />
+          <Property Name="match_id" Type="int" />
+        </EntityType>
         <EntityType Name="Event">
           <Key>
             <PropertyRef Name="id" />
@@ -16,13 +25,23 @@
           <Property Name="start_date" Type="date" />
           <Property Name="end_date" Type="date" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6013: The table/view 'SportsManagementDB.dbo.gallery' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+        <EntityType Name="favourites">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="user_id" Type="int" />
+          <Property Name="match_id" Type="int" />
+        </EntityType>
         <EntityType Name="gallery">
-          <Property Name="id" Type="int" />
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="path" Type="varchar" MaxLength="1000" />
           <Property Name="match_id" Type="int" />
-        </EntityType>-->
+          <Property Name="Date" Type="date" />
+        </EntityType>
         <EntityType Name="Match">
           <Key>
             <PropertyRef Name="id" />
@@ -31,26 +50,33 @@ warning 6013: The table/view 'SportsManagementDB.dbo.gallery' does not have a pr
           <Property Name="first_half_score" Type="varchar" MaxLength="50" />
           <Property Name="second_half_score" Type="varchar" MaxLength="50" />
           <Property Name="status" Type="varchar" MaxLength="20" />
-          <Property Name="comments" Type="varchar" MaxLength="500" />
           <Property Name="sport_id" Type="int" />
+          <Property Name="round" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Player">
           <Key>
             <PropertyRef Name="reg_number" />
           </Key>
           <Property Name="name" Type="varchar" MaxLength="100" />
-          <Property Name="reg_number" Type="int" Nullable="false" />
+          <Property Name="reg_number" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="role" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Playerteaminfo">
+          <Key>
+            <PropertyRef Name="player_regno" />
+            <PropertyRef Name="sport_id" />
+          </Key>
+          <Property Name="player_regno" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="sport_id" Type="int" Nullable="false" />
           <Property Name="team_id" Type="int" />
         </EntityType>
         <EntityType Name="Schedule">
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="team1_id" Type="int" />
           <Property Name="team2_id" Type="int" />
-          <Property Name="sport_id" Type="int" />
           <Property Name="match_id" Type="int" />
           <Property Name="date" Type="date" />
           <Property Name="time" Type="time" Precision="7" />
@@ -76,8 +102,6 @@ warning 6013: The table/view 'SportsManagementDB.dbo.gallery' does not have a pr
           <Property Name="semester" Type="varchar" MaxLength="20" />
           <Property Name="isRegistered" Type="int" />
           <Property Name="no_players" Type="int" />
-          <Property Name="wins" Type="int" />
-          <Property Name="losses" Type="int" />
           <Property Name="user_id" Type="int" />
           <Property Name="sport_id" Type="int" />
         </EntityType>
@@ -86,7 +110,7 @@ warning 6013: The table/view 'SportsManagementDB.dbo.gallery' does not have a pr
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="50" />
           <Property Name="registration_no" Type="varchar" MaxLength="100" />
           <Property Name="password" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="role" Type="varchar" MaxLength="20" Nullable="false" />
@@ -99,7 +123,31 @@ warning 6013: The table/view 'SportsManagementDB.dbo.gallery' does not have a pr
           <Property Name="name" Type="varchar" MaxLength="100" />
           <Property Name="schedule_id" Type="int" />
         </EntityType>
-        <Association Name="FK__Event__user_id__4CA06362">
+        <Association Name="FK__Comment__match_i__5FB337D6">
+          <End Role="Match" Type="Self.Match" Multiplicity="0..1" />
+          <End Role="Comment" Type="Self.Comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Match">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Comment">
+              <PropertyRef Name="match_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Comment__user_id__60A75C0F">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="Comment" Type="Self.Comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Comment">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Event__user_id__619B8048">
           <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
           <End Role="Event" Type="Self.Event" Multiplicity="*" />
           <ReferentialConstraint>
@@ -111,10 +159,43 @@ warning 6013: The table/view 'SportsManagementDB.dbo.gallery' does not have a pr
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <!--Errors Found During Generation:
-error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relationship, but cannot be found.
-        <Association Name="FK__gallery__match_i__5DCAEF64" />-->
-        <Association Name="FK__Match__sport_id__59FA5E80">
+        <Association Name="FK__favourite__match__628FA481">
+          <End Role="Match" Type="Self.Match" Multiplicity="0..1" />
+          <End Role="favourites" Type="Self.favourites" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Match">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="favourites">
+              <PropertyRef Name="match_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__favourite__user___6383C8BA">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="favourites" Type="Self.favourites" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="favourites">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__gallery__match_i__68487DD7">
+          <End Role="Match" Type="Self.Match" Multiplicity="0..1" />
+          <End Role="gallery" Type="Self.gallery" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Match">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="gallery">
+              <PropertyRef Name="match_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Match__sport_id__656C112C">
           <End Role="Sport" Type="Self.Sport" Multiplicity="0..1" />
           <End Role="Match" Type="Self.Match" Multiplicity="*" />
           <ReferentialConstraint>
@@ -126,19 +207,43 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Player__team_id__571DF1D5">
+        <Association Name="FK__Playertea__playe__66603565">
+          <End Role="Player" Type="Self.Player" Multiplicity="1" />
+          <End Role="Playerteaminfo" Type="Self.Playerteaminfo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="reg_number" />
+            </Principal>
+            <Dependent Role="Playerteaminfo">
+              <PropertyRef Name="player_regno" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Playertea__sport__6754599E">
+          <End Role="Sport" Type="Self.Sport" Multiplicity="1" />
+          <End Role="Playerteaminfo" Type="Self.Playerteaminfo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sport">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Playerteaminfo">
+              <PropertyRef Name="sport_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Playertea__team___68487DD7">
           <End Role="Team" Type="Self.Team" Multiplicity="0..1" />
-          <End Role="Player" Type="Self.Player" Multiplicity="*" />
+          <End Role="Playerteaminfo" Type="Self.Playerteaminfo" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Team">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="Player">
+            <Dependent Role="Playerteaminfo">
               <PropertyRef Name="team_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Schedule__match___628FA481">
+        <Association Name="FK__Schedule__match___693CA210">
           <End Role="Match" Type="Self.Match" Multiplicity="0..1" />
           <End Role="Schedule" Type="Self.Schedule" Multiplicity="*" />
           <ReferentialConstraint>
@@ -150,7 +255,7 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Schedule__team1___60A75C0F">
+        <Association Name="FK__Schedule__team1___6A30C649">
           <End Role="Team" Type="Self.Team" Multiplicity="0..1" />
           <End Role="Schedule" Type="Self.Schedule" Multiplicity="*" />
           <ReferentialConstraint>
@@ -162,7 +267,7 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Schedule__team2___619B8048">
+        <Association Name="FK__Schedule__team2___6B24EA82">
           <End Role="Team" Type="Self.Team" Multiplicity="0..1" />
           <End Role="Schedule" Type="Self.Schedule" Multiplicity="*" />
           <ReferentialConstraint>
@@ -174,7 +279,7 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Sport__event_id__5070F446">
+        <Association Name="FK__Sport__event_id__6C190EBB">
           <End Role="Event" Type="Self.Event" Multiplicity="0..1" />
           <End Role="Sport" Type="Self.Sport" Multiplicity="*" />
           <ReferentialConstraint>
@@ -186,7 +291,7 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Sport__user_id__4F7CD00D">
+        <Association Name="FK__Sport__user_id__6D0D32F4">
           <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
           <End Role="Sport" Type="Self.Sport" Multiplicity="*" />
           <ReferentialConstraint>
@@ -198,7 +303,7 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Team__sport_id__5441852A">
+        <Association Name="FK__Team__sport_id__6E01572D">
           <End Role="Sport" Type="Self.Sport" Multiplicity="0..1" />
           <End Role="Team" Type="Self.Team" Multiplicity="*" />
           <ReferentialConstraint>
@@ -210,7 +315,7 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Team__user_id__534D60F1">
+        <Association Name="FK__Team__user_id__6EF57B66">
           <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
           <End Role="Team" Type="Self.Team" Multiplicity="*" />
           <ReferentialConstraint>
@@ -222,7 +327,7 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__venue__schedule___656C112C">
+        <Association Name="FK__venue__schedule___6FE99F9F">
           <End Role="Schedule" Type="Self.Schedule" Multiplicity="0..1" />
           <End Role="venue" Type="Self.venue" Multiplicity="*" />
           <ReferentialConstraint>
@@ -235,55 +340,87 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="SportsManagementDBModelStoreContainer">
+          <EntitySet Name="Comment" EntityType="Self.Comment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Event" EntityType="Self.Event" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="favourites" EntityType="Self.favourites" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="gallery" EntityType="Self.gallery" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Match" EntityType="Self.Match" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Player" EntityType="Self.Player" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Playerteaminfo" EntityType="Self.Playerteaminfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Schedule" EntityType="Self.Schedule" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Sport" EntityType="Self.Sport" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Team" EntityType="Self.Team" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="venue" EntityType="Self.venue" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__Event__user_id__4CA06362" Association="Self.FK__Event__user_id__4CA06362">
+          <AssociationSet Name="FK__Comment__match_i__5FB337D6" Association="Self.FK__Comment__match_i__5FB337D6">
+            <End Role="Match" EntitySet="Match" />
+            <End Role="Comment" EntitySet="Comment" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Comment__user_id__60A75C0F" Association="Self.FK__Comment__user_id__60A75C0F">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Comment" EntitySet="Comment" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Event__user_id__619B8048" Association="Self.FK__Event__user_id__619B8048">
             <End Role="Users" EntitySet="Users" />
             <End Role="Event" EntitySet="Event" />
           </AssociationSet>
-          <AssociationSet Name="FK__Match__sport_id__59FA5E80" Association="Self.FK__Match__sport_id__59FA5E80">
+          <AssociationSet Name="FK__favourite__match__628FA481" Association="Self.FK__favourite__match__628FA481">
+            <End Role="Match" EntitySet="Match" />
+            <End Role="favourites" EntitySet="favourites" />
+          </AssociationSet>
+          <AssociationSet Name="FK__favourite__user___6383C8BA" Association="Self.FK__favourite__user___6383C8BA">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="favourites" EntitySet="favourites" />
+          </AssociationSet>
+          <AssociationSet Name="FK__gallery__match_i__68487DD7" Association="Self.FK__gallery__match_i__68487DD7">
+            <End Role="Match" EntitySet="Match" />
+            <End Role="gallery" EntitySet="gallery" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Match__sport_id__656C112C" Association="Self.FK__Match__sport_id__656C112C">
             <End Role="Sport" EntitySet="Sport" />
             <End Role="Match" EntitySet="Match" />
           </AssociationSet>
-          <AssociationSet Name="FK__Player__team_id__571DF1D5" Association="Self.FK__Player__team_id__571DF1D5">
-            <End Role="Team" EntitySet="Team" />
+          <AssociationSet Name="FK__Playertea__playe__66603565" Association="Self.FK__Playertea__playe__66603565">
             <End Role="Player" EntitySet="Player" />
+            <End Role="Playerteaminfo" EntitySet="Playerteaminfo" />
           </AssociationSet>
-          <AssociationSet Name="FK__Schedule__match___628FA481" Association="Self.FK__Schedule__match___628FA481">
+          <AssociationSet Name="FK__Playertea__sport__6754599E" Association="Self.FK__Playertea__sport__6754599E">
+            <End Role="Sport" EntitySet="Sport" />
+            <End Role="Playerteaminfo" EntitySet="Playerteaminfo" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Playertea__team___68487DD7" Association="Self.FK__Playertea__team___68487DD7">
+            <End Role="Team" EntitySet="Team" />
+            <End Role="Playerteaminfo" EntitySet="Playerteaminfo" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Schedule__match___693CA210" Association="Self.FK__Schedule__match___693CA210">
             <End Role="Match" EntitySet="Match" />
             <End Role="Schedule" EntitySet="Schedule" />
           </AssociationSet>
-          <AssociationSet Name="FK__Schedule__team1___60A75C0F" Association="Self.FK__Schedule__team1___60A75C0F">
+          <AssociationSet Name="FK__Schedule__team1___6A30C649" Association="Self.FK__Schedule__team1___6A30C649">
             <End Role="Team" EntitySet="Team" />
             <End Role="Schedule" EntitySet="Schedule" />
           </AssociationSet>
-          <AssociationSet Name="FK__Schedule__team2___619B8048" Association="Self.FK__Schedule__team2___619B8048">
+          <AssociationSet Name="FK__Schedule__team2___6B24EA82" Association="Self.FK__Schedule__team2___6B24EA82">
             <End Role="Team" EntitySet="Team" />
             <End Role="Schedule" EntitySet="Schedule" />
           </AssociationSet>
-          <AssociationSet Name="FK__Sport__event_id__5070F446" Association="Self.FK__Sport__event_id__5070F446">
+          <AssociationSet Name="FK__Sport__event_id__6C190EBB" Association="Self.FK__Sport__event_id__6C190EBB">
             <End Role="Event" EntitySet="Event" />
             <End Role="Sport" EntitySet="Sport" />
           </AssociationSet>
-          <AssociationSet Name="FK__Sport__user_id__4F7CD00D" Association="Self.FK__Sport__user_id__4F7CD00D">
+          <AssociationSet Name="FK__Sport__user_id__6D0D32F4" Association="Self.FK__Sport__user_id__6D0D32F4">
             <End Role="Users" EntitySet="Users" />
             <End Role="Sport" EntitySet="Sport" />
           </AssociationSet>
-          <AssociationSet Name="FK__Team__sport_id__5441852A" Association="Self.FK__Team__sport_id__5441852A">
+          <AssociationSet Name="FK__Team__sport_id__6E01572D" Association="Self.FK__Team__sport_id__6E01572D">
             <End Role="Sport" EntitySet="Sport" />
             <End Role="Team" EntitySet="Team" />
           </AssociationSet>
-          <AssociationSet Name="FK__Team__user_id__534D60F1" Association="Self.FK__Team__user_id__534D60F1">
+          <AssociationSet Name="FK__Team__user_id__6EF57B66" Association="Self.FK__Team__user_id__6EF57B66">
             <End Role="Users" EntitySet="Users" />
             <End Role="Team" EntitySet="Team" />
           </AssociationSet>
-          <AssociationSet Name="FK__venue__schedule___656C112C" Association="Self.FK__venue__schedule___656C112C">
+          <AssociationSet Name="FK__venue__schedule___6FE99F9F" Association="Self.FK__venue__schedule___6FE99F9F">
             <End Role="Schedule" EntitySet="Schedule" />
             <End Role="venue" EntitySet="venue" />
           </AssociationSet>
@@ -293,6 +430,17 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="SportsManagementDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Comment">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="user_id" Type="Int32" />
+          <Property Name="match_id" Type="Int32" />
+          <NavigationProperty Name="Match" Relationship="Self.FK__Comment__match_i__5FB337D6" FromRole="Comment" ToRole="Match" />
+          <NavigationProperty Name="User" Relationship="Self.FK__Comment__user_id__60A75C0F" FromRole="Comment" ToRole="Users" />
+        </EntityType>
         <EntityType Name="Event">
           <Key>
             <PropertyRef Name="id" />
@@ -303,8 +451,28 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
           <Property Name="user_id" Type="Int32" />
           <Property Name="start_date" Type="DateTime" Precision="0" />
           <Property Name="end_date" Type="DateTime" Precision="0" />
-          <NavigationProperty Name="User" Relationship="Self.FK__Event__user_id__4CA06362" FromRole="Event" ToRole="Users" />
-          <NavigationProperty Name="Sports" Relationship="Self.FK__Sport__event_id__5070F446" FromRole="Event" ToRole="Sport" />
+          <NavigationProperty Name="User" Relationship="Self.FK__Event__user_id__619B8048" FromRole="Event" ToRole="Users" />
+          <NavigationProperty Name="Sports" Relationship="Self.FK__Sport__event_id__6C190EBB" FromRole="Event" ToRole="Sport" />
+        </EntityType>
+        <EntityType Name="favourite">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="user_id" Type="Int32" />
+          <Property Name="match_id" Type="Int32" />
+          <NavigationProperty Name="Match" Relationship="Self.FK__favourite__match__628FA481" FromRole="favourites" ToRole="Match" />
+          <NavigationProperty Name="User" Relationship="Self.FK__favourite__user___6383C8BA" FromRole="favourites" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="gallery">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="path" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="match_id" Type="Int32" />
+          <Property Name="Date" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="Match" Relationship="Self.FK__gallery__match_i__68487DD7" FromRole="gallery" ToRole="Match" />
         </EntityType>
         <EntityType Name="Match">
           <Key>
@@ -314,36 +482,49 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
           <Property Name="first_half_score" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="second_half_score" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="status" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="comments" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="sport_id" Type="Int32" />
-          <NavigationProperty Name="Sport" Relationship="Self.FK__Match__sport_id__59FA5E80" FromRole="Match" ToRole="Sport" />
-          <NavigationProperty Name="Schedules" Relationship="Self.FK__Schedule__match___628FA481" FromRole="Match" ToRole="Schedule" />
+          <Property Name="round" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Comments" Relationship="Self.FK__Comment__match_i__5FB337D6" FromRole="Match" ToRole="Comment" />
+          <NavigationProperty Name="favourites" Relationship="Self.FK__favourite__match__628FA481" FromRole="Match" ToRole="favourites" />
+          <NavigationProperty Name="galleries" Relationship="Self.FK__gallery__match_i__68487DD7" FromRole="Match" ToRole="gallery" />
+          <NavigationProperty Name="Sport" Relationship="Self.FK__Match__sport_id__656C112C" FromRole="Match" ToRole="Sport" />
+          <NavigationProperty Name="Schedules" Relationship="Self.FK__Schedule__match___693CA210" FromRole="Match" ToRole="Schedule" />
         </EntityType>
         <EntityType Name="Player">
           <Key>
             <PropertyRef Name="reg_number" />
           </Key>
           <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="reg_number" Type="Int32" Nullable="false" />
+          <Property Name="reg_number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="role" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Playerteaminfoes" Relationship="Self.FK__Playertea__playe__66603565" FromRole="Player" ToRole="Playerteaminfo" />
+        </EntityType>
+        <EntityType Name="Playerteaminfo">
+          <Key>
+            <PropertyRef Name="player_regno" />
+            <PropertyRef Name="sport_id" />
+          </Key>
+          <Property Name="player_regno" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="sport_id" Type="Int32" Nullable="false" />
           <Property Name="team_id" Type="Int32" />
-          <NavigationProperty Name="Team" Relationship="Self.FK__Player__team_id__571DF1D5" FromRole="Player" ToRole="Team" />
+          <NavigationProperty Name="Player" Relationship="Self.FK__Playertea__playe__66603565" FromRole="Playerteaminfo" ToRole="Player" />
+          <NavigationProperty Name="Sport" Relationship="Self.FK__Playertea__sport__6754599E" FromRole="Playerteaminfo" ToRole="Sport" />
+          <NavigationProperty Name="Team" Relationship="Self.FK__Playertea__team___68487DD7" FromRole="Playerteaminfo" ToRole="Team" />
         </EntityType>
         <EntityType Name="Schedule">
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="team1_id" Type="Int32" />
           <Property Name="team2_id" Type="Int32" />
-          <Property Name="sport_id" Type="Int32" />
           <Property Name="match_id" Type="Int32" />
           <Property Name="date" Type="DateTime" Precision="0" />
           <Property Name="time" Type="Time" Precision="7" />
-          <NavigationProperty Name="Match" Relationship="Self.FK__Schedule__match___628FA481" FromRole="Schedule" ToRole="Match" />
-          <NavigationProperty Name="Team" Relationship="Self.FK__Schedule__team1___60A75C0F" FromRole="Schedule" ToRole="Team" />
-          <NavigationProperty Name="Team1" Relationship="Self.FK__Schedule__team2___619B8048" FromRole="Schedule" ToRole="Team" />
-          <NavigationProperty Name="venues" Relationship="Self.FK__venue__schedule___656C112C" FromRole="Schedule" ToRole="venue" />
+          <NavigationProperty Name="Match" Relationship="Self.FK__Schedule__match___693CA210" FromRole="Schedule" ToRole="Match" />
+          <NavigationProperty Name="Team" Relationship="Self.FK__Schedule__team1___6A30C649" FromRole="Schedule" ToRole="Team" />
+          <NavigationProperty Name="Team1" Relationship="Self.FK__Schedule__team2___6B24EA82" FromRole="Schedule" ToRole="Team" />
+          <NavigationProperty Name="venues" Relationship="Self.FK__venue__schedule___6FE99F9F" FromRole="Schedule" ToRole="venue" />
         </EntityType>
         <EntityType Name="Sport">
           <Key>
@@ -356,10 +537,11 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
           <Property Name="user_id" Type="Int32" />
           <Property Name="event_id" Type="Int32" />
           <Property Name="rule" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Event" Relationship="Self.FK__Sport__event_id__5070F446" FromRole="Sport" ToRole="Event" />
-          <NavigationProperty Name="Matches" Relationship="Self.FK__Match__sport_id__59FA5E80" FromRole="Sport" ToRole="Match" />
-          <NavigationProperty Name="User" Relationship="Self.FK__Sport__user_id__4F7CD00D" FromRole="Sport" ToRole="Users" />
-          <NavigationProperty Name="Teams" Relationship="Self.FK__Team__sport_id__5441852A" FromRole="Sport" ToRole="Team" />
+          <NavigationProperty Name="Event" Relationship="Self.FK__Sport__event_id__6C190EBB" FromRole="Sport" ToRole="Event" />
+          <NavigationProperty Name="Matches" Relationship="Self.FK__Match__sport_id__656C112C" FromRole="Sport" ToRole="Match" />
+          <NavigationProperty Name="Playerteaminfoes" Relationship="Self.FK__Playertea__sport__6754599E" FromRole="Sport" ToRole="Playerteaminfo" />
+          <NavigationProperty Name="User" Relationship="Self.FK__Sport__user_id__6D0D32F4" FromRole="Sport" ToRole="Users" />
+          <NavigationProperty Name="Teams" Relationship="Self.FK__Team__sport_id__6E01572D" FromRole="Sport" ToRole="Team" />
         </EntityType>
         <EntityType Name="Team">
           <Key>
@@ -370,28 +552,28 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
           <Property Name="semester" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="isRegistered" Type="Int32" />
           <Property Name="no_players" Type="Int32" />
-          <Property Name="wins" Type="Int32" />
-          <Property Name="losses" Type="Int32" />
           <Property Name="user_id" Type="Int32" />
           <Property Name="sport_id" Type="Int32" />
-          <NavigationProperty Name="Players" Relationship="Self.FK__Player__team_id__571DF1D5" FromRole="Team" ToRole="Player" />
-          <NavigationProperty Name="Schedules" Relationship="Self.FK__Schedule__team1___60A75C0F" FromRole="Team" ToRole="Schedule" />
-          <NavigationProperty Name="Schedules1" Relationship="Self.FK__Schedule__team2___619B8048" FromRole="Team" ToRole="Schedule" />
-          <NavigationProperty Name="Sport" Relationship="Self.FK__Team__sport_id__5441852A" FromRole="Team" ToRole="Sport" />
-          <NavigationProperty Name="User" Relationship="Self.FK__Team__user_id__534D60F1" FromRole="Team" ToRole="Users" />
+          <NavigationProperty Name="Playerteaminfoes" Relationship="Self.FK__Playertea__team___68487DD7" FromRole="Team" ToRole="Playerteaminfo" />
+          <NavigationProperty Name="Schedules" Relationship="Self.FK__Schedule__team1___6A30C649" FromRole="Team" ToRole="Schedule" />
+          <NavigationProperty Name="Schedules1" Relationship="Self.FK__Schedule__team2___6B24EA82" FromRole="Team" ToRole="Schedule" />
+          <NavigationProperty Name="Sport" Relationship="Self.FK__Team__sport_id__6E01572D" FromRole="Team" ToRole="Sport" />
+          <NavigationProperty Name="User" Relationship="Self.FK__Team__user_id__6EF57B66" FromRole="Team" ToRole="Users" />
         </EntityType>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="registration_no" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="password" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="role" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="Events" Relationship="Self.FK__Event__user_id__4CA06362" FromRole="Users" ToRole="Event" />
-          <NavigationProperty Name="Sports" Relationship="Self.FK__Sport__user_id__4F7CD00D" FromRole="Users" ToRole="Sport" />
-          <NavigationProperty Name="Teams" Relationship="Self.FK__Team__user_id__534D60F1" FromRole="Users" ToRole="Team" />
+          <NavigationProperty Name="Comments" Relationship="Self.FK__Comment__user_id__60A75C0F" FromRole="Users" ToRole="Comment" />
+          <NavigationProperty Name="Events" Relationship="Self.FK__Event__user_id__619B8048" FromRole="Users" ToRole="Event" />
+          <NavigationProperty Name="favourites" Relationship="Self.FK__favourite__user___6383C8BA" FromRole="Users" ToRole="favourites" />
+          <NavigationProperty Name="Sports" Relationship="Self.FK__Sport__user_id__6D0D32F4" FromRole="Users" ToRole="Sport" />
+          <NavigationProperty Name="Teams" Relationship="Self.FK__Team__user_id__6EF57B66" FromRole="Users" ToRole="Team" />
         </EntityType>
         <EntityType Name="venue">
           <Key>
@@ -400,9 +582,33 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="schedule_id" Type="Int32" />
-          <NavigationProperty Name="Schedule" Relationship="Self.FK__venue__schedule___656C112C" FromRole="venue" ToRole="Schedule" />
+          <NavigationProperty Name="Schedule" Relationship="Self.FK__venue__schedule___6FE99F9F" FromRole="venue" ToRole="Schedule" />
         </EntityType>
-        <Association Name="FK__Event__user_id__4CA06362">
+        <Association Name="FK__Comment__match_i__5FB337D6">
+          <End Role="Match" Type="Self.Match" Multiplicity="0..1" />
+          <End Role="Comment" Type="Self.Comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Match">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Comment">
+              <PropertyRef Name="match_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Comment__user_id__60A75C0F">
+          <End Role="Users" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Comment" Type="Self.Comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Comment">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Event__user_id__619B8048">
           <End Role="Users" Type="Self.User" Multiplicity="0..1" />
           <End Role="Event" Type="Self.Event" Multiplicity="*" />
           <ReferentialConstraint>
@@ -414,7 +620,7 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Sport__event_id__5070F446">
+        <Association Name="FK__Sport__event_id__6C190EBB">
           <End Role="Event" Type="Self.Event" Multiplicity="0..1" />
           <End Role="Sport" Type="Self.Sport" Multiplicity="*" />
           <ReferentialConstraint>
@@ -426,7 +632,43 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Match__sport_id__59FA5E80">
+        <Association Name="FK__favourite__match__628FA481">
+          <End Role="Match" Type="Self.Match" Multiplicity="0..1" />
+          <End Role="favourites" Type="Self.favourite" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Match">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="favourites">
+              <PropertyRef Name="match_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__favourite__user___6383C8BA">
+          <End Role="Users" Type="Self.User" Multiplicity="0..1" />
+          <End Role="favourites" Type="Self.favourite" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="favourites">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__gallery__match_i__68487DD7">
+          <End Role="Match" Type="Self.Match" Multiplicity="0..1" />
+          <End Role="gallery" Type="Self.gallery" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Match">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="gallery">
+              <PropertyRef Name="match_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Match__sport_id__656C112C">
           <End Role="Sport" Type="Self.Sport" Multiplicity="0..1" />
           <End Role="Match" Type="Self.Match" Multiplicity="*" />
           <ReferentialConstraint>
@@ -438,7 +680,7 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Schedule__match___628FA481">
+        <Association Name="FK__Schedule__match___693CA210">
           <End Role="Match" Type="Self.Match" Multiplicity="0..1" />
           <End Role="Schedule" Type="Self.Schedule" Multiplicity="*" />
           <ReferentialConstraint>
@@ -450,19 +692,43 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Player__team_id__571DF1D5">
+        <Association Name="FK__Playertea__playe__66603565">
+          <End Role="Player" Type="Self.Player" Multiplicity="1" />
+          <End Role="Playerteaminfo" Type="Self.Playerteaminfo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="reg_number" />
+            </Principal>
+            <Dependent Role="Playerteaminfo">
+              <PropertyRef Name="player_regno" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Playertea__sport__6754599E">
+          <End Role="Sport" Type="Self.Sport" Multiplicity="1" />
+          <End Role="Playerteaminfo" Type="Self.Playerteaminfo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sport">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Playerteaminfo">
+              <PropertyRef Name="sport_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Playertea__team___68487DD7">
           <End Role="Team" Type="Self.Team" Multiplicity="0..1" />
-          <End Role="Player" Type="Self.Player" Multiplicity="*" />
+          <End Role="Playerteaminfo" Type="Self.Playerteaminfo" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Team">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="Player">
+            <Dependent Role="Playerteaminfo">
               <PropertyRef Name="team_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Schedule__team1___60A75C0F">
+        <Association Name="FK__Schedule__team1___6A30C649">
           <End Role="Team" Type="Self.Team" Multiplicity="0..1" />
           <End Role="Schedule" Type="Self.Schedule" Multiplicity="*" />
           <ReferentialConstraint>
@@ -474,7 +740,7 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Schedule__team2___619B8048">
+        <Association Name="FK__Schedule__team2___6B24EA82">
           <End Role="Team" Type="Self.Team" Multiplicity="0..1" />
           <End Role="Schedule" Type="Self.Schedule" Multiplicity="*" />
           <ReferentialConstraint>
@@ -486,7 +752,7 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__venue__schedule___656C112C">
+        <Association Name="FK__venue__schedule___6FE99F9F">
           <End Role="Schedule" Type="Self.Schedule" Multiplicity="0..1" />
           <End Role="venue" Type="Self.venue" Multiplicity="*" />
           <ReferentialConstraint>
@@ -498,7 +764,7 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Sport__user_id__4F7CD00D">
+        <Association Name="FK__Sport__user_id__6D0D32F4">
           <End Role="Users" Type="Self.User" Multiplicity="0..1" />
           <End Role="Sport" Type="Self.Sport" Multiplicity="*" />
           <ReferentialConstraint>
@@ -510,7 +776,7 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Team__sport_id__5441852A">
+        <Association Name="FK__Team__sport_id__6E01572D">
           <End Role="Sport" Type="Self.Sport" Multiplicity="0..1" />
           <End Role="Team" Type="Self.Team" Multiplicity="*" />
           <ReferentialConstraint>
@@ -522,7 +788,7 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Team__user_id__534D60F1">
+        <Association Name="FK__Team__user_id__6EF57B66">
           <End Role="Users" Type="Self.User" Multiplicity="0..1" />
           <End Role="Team" Type="Self.Team" Multiplicity="*" />
           <ReferentialConstraint>
@@ -535,55 +801,87 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="SportsManagementDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Comments" EntityType="Self.Comment" />
           <EntitySet Name="Events" EntityType="Self.Event" />
+          <EntitySet Name="favourites" EntityType="Self.favourite" />
+          <EntitySet Name="galleries" EntityType="Self.gallery" />
           <EntitySet Name="Matches" EntityType="Self.Match" />
           <EntitySet Name="Players" EntityType="Self.Player" />
+          <EntitySet Name="Playerteaminfoes" EntityType="Self.Playerteaminfo" />
           <EntitySet Name="Schedules" EntityType="Self.Schedule" />
           <EntitySet Name="Sports" EntityType="Self.Sport" />
           <EntitySet Name="Teams" EntityType="Self.Team" />
           <EntitySet Name="Users" EntityType="Self.User" />
           <EntitySet Name="venues" EntityType="Self.venue" />
-          <AssociationSet Name="FK__Event__user_id__4CA06362" Association="Self.FK__Event__user_id__4CA06362">
+          <AssociationSet Name="FK__Comment__match_i__5FB337D6" Association="Self.FK__Comment__match_i__5FB337D6">
+            <End Role="Match" EntitySet="Matches" />
+            <End Role="Comment" EntitySet="Comments" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Comment__user_id__60A75C0F" Association="Self.FK__Comment__user_id__60A75C0F">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Comment" EntitySet="Comments" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Event__user_id__619B8048" Association="Self.FK__Event__user_id__619B8048">
             <End Role="Users" EntitySet="Users" />
             <End Role="Event" EntitySet="Events" />
           </AssociationSet>
-          <AssociationSet Name="FK__Sport__event_id__5070F446" Association="Self.FK__Sport__event_id__5070F446">
+          <AssociationSet Name="FK__Sport__event_id__6C190EBB" Association="Self.FK__Sport__event_id__6C190EBB">
             <End Role="Event" EntitySet="Events" />
             <End Role="Sport" EntitySet="Sports" />
           </AssociationSet>
-          <AssociationSet Name="FK__Match__sport_id__59FA5E80" Association="Self.FK__Match__sport_id__59FA5E80">
+          <AssociationSet Name="FK__favourite__match__628FA481" Association="Self.FK__favourite__match__628FA481">
+            <End Role="Match" EntitySet="Matches" />
+            <End Role="favourites" EntitySet="favourites" />
+          </AssociationSet>
+          <AssociationSet Name="FK__favourite__user___6383C8BA" Association="Self.FK__favourite__user___6383C8BA">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="favourites" EntitySet="favourites" />
+          </AssociationSet>
+          <AssociationSet Name="FK__gallery__match_i__68487DD7" Association="Self.FK__gallery__match_i__68487DD7">
+            <End Role="Match" EntitySet="Matches" />
+            <End Role="gallery" EntitySet="galleries" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Match__sport_id__656C112C" Association="Self.FK__Match__sport_id__656C112C">
             <End Role="Sport" EntitySet="Sports" />
             <End Role="Match" EntitySet="Matches" />
           </AssociationSet>
-          <AssociationSet Name="FK__Schedule__match___628FA481" Association="Self.FK__Schedule__match___628FA481">
+          <AssociationSet Name="FK__Schedule__match___693CA210" Association="Self.FK__Schedule__match___693CA210">
             <End Role="Match" EntitySet="Matches" />
             <End Role="Schedule" EntitySet="Schedules" />
           </AssociationSet>
-          <AssociationSet Name="FK__Player__team_id__571DF1D5" Association="Self.FK__Player__team_id__571DF1D5">
-            <End Role="Team" EntitySet="Teams" />
+          <AssociationSet Name="FK__Playertea__playe__66603565" Association="Self.FK__Playertea__playe__66603565">
             <End Role="Player" EntitySet="Players" />
+            <End Role="Playerteaminfo" EntitySet="Playerteaminfoes" />
           </AssociationSet>
-          <AssociationSet Name="FK__Schedule__team1___60A75C0F" Association="Self.FK__Schedule__team1___60A75C0F">
+          <AssociationSet Name="FK__Playertea__sport__6754599E" Association="Self.FK__Playertea__sport__6754599E">
+            <End Role="Sport" EntitySet="Sports" />
+            <End Role="Playerteaminfo" EntitySet="Playerteaminfoes" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Playertea__team___68487DD7" Association="Self.FK__Playertea__team___68487DD7">
+            <End Role="Team" EntitySet="Teams" />
+            <End Role="Playerteaminfo" EntitySet="Playerteaminfoes" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Schedule__team1___6A30C649" Association="Self.FK__Schedule__team1___6A30C649">
             <End Role="Team" EntitySet="Teams" />
             <End Role="Schedule" EntitySet="Schedules" />
           </AssociationSet>
-          <AssociationSet Name="FK__Schedule__team2___619B8048" Association="Self.FK__Schedule__team2___619B8048">
+          <AssociationSet Name="FK__Schedule__team2___6B24EA82" Association="Self.FK__Schedule__team2___6B24EA82">
             <End Role="Team" EntitySet="Teams" />
             <End Role="Schedule" EntitySet="Schedules" />
           </AssociationSet>
-          <AssociationSet Name="FK__venue__schedule___656C112C" Association="Self.FK__venue__schedule___656C112C">
+          <AssociationSet Name="FK__venue__schedule___6FE99F9F" Association="Self.FK__venue__schedule___6FE99F9F">
             <End Role="Schedule" EntitySet="Schedules" />
             <End Role="venue" EntitySet="venues" />
           </AssociationSet>
-          <AssociationSet Name="FK__Sport__user_id__4F7CD00D" Association="Self.FK__Sport__user_id__4F7CD00D">
+          <AssociationSet Name="FK__Sport__user_id__6D0D32F4" Association="Self.FK__Sport__user_id__6D0D32F4">
             <End Role="Users" EntitySet="Users" />
             <End Role="Sport" EntitySet="Sports" />
           </AssociationSet>
-          <AssociationSet Name="FK__Team__sport_id__5441852A" Association="Self.FK__Team__sport_id__5441852A">
+          <AssociationSet Name="FK__Team__sport_id__6E01572D" Association="Self.FK__Team__sport_id__6E01572D">
             <End Role="Sport" EntitySet="Sports" />
             <End Role="Team" EntitySet="Teams" />
           </AssociationSet>
-          <AssociationSet Name="FK__Team__user_id__534D60F1" Association="Self.FK__Team__user_id__534D60F1">
+          <AssociationSet Name="FK__Team__user_id__6EF57B66" Association="Self.FK__Team__user_id__6EF57B66">
             <End Role="Users" EntitySet="Users" />
             <End Role="Team" EntitySet="Teams" />
           </AssociationSet>
@@ -594,6 +892,16 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="SportsManagementDBModelStoreContainer" CdmEntityContainer="SportsManagementDBEntities">
+          <EntitySetMapping Name="Comments">
+            <EntityTypeMapping TypeName="SportsManagementDBModel.Comment">
+              <MappingFragment StoreEntitySet="Comment">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="match_id" ColumnName="match_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Events">
             <EntityTypeMapping TypeName="SportsManagementDBModel.Event">
               <MappingFragment StoreEntitySet="Event">
@@ -606,6 +914,25 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="favourites">
+            <EntityTypeMapping TypeName="SportsManagementDBModel.favourite">
+              <MappingFragment StoreEntitySet="favourites">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="match_id" ColumnName="match_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="galleries">
+            <EntityTypeMapping TypeName="SportsManagementDBModel.gallery">
+              <MappingFragment StoreEntitySet="gallery">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="path" ColumnName="path" />
+                <ScalarProperty Name="match_id" ColumnName="match_id" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Matches">
             <EntityTypeMapping TypeName="SportsManagementDBModel.Match">
               <MappingFragment StoreEntitySet="Match">
@@ -613,8 +940,8 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
                 <ScalarProperty Name="first_half_score" ColumnName="first_half_score" />
                 <ScalarProperty Name="second_half_score" ColumnName="second_half_score" />
                 <ScalarProperty Name="status" ColumnName="status" />
-                <ScalarProperty Name="comments" ColumnName="comments" />
                 <ScalarProperty Name="sport_id" ColumnName="sport_id" />
+                <ScalarProperty Name="round" ColumnName="round" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -624,6 +951,14 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="reg_number" ColumnName="reg_number" />
                 <ScalarProperty Name="role" ColumnName="role" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Playerteaminfoes">
+            <EntityTypeMapping TypeName="SportsManagementDBModel.Playerteaminfo">
+              <MappingFragment StoreEntitySet="Playerteaminfo">
+                <ScalarProperty Name="player_regno" ColumnName="player_regno" />
+                <ScalarProperty Name="sport_id" ColumnName="sport_id" />
                 <ScalarProperty Name="team_id" ColumnName="team_id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -634,7 +969,6 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="team1_id" ColumnName="team1_id" />
                 <ScalarProperty Name="team2_id" ColumnName="team2_id" />
-                <ScalarProperty Name="sport_id" ColumnName="sport_id" />
                 <ScalarProperty Name="match_id" ColumnName="match_id" />
                 <ScalarProperty Name="date" ColumnName="date" />
                 <ScalarProperty Name="time" ColumnName="time" />
@@ -662,8 +996,6 @@ error 6004: The table 'SportsManagementDB.dbo.gallery' is referenced by a relati
                 <ScalarProperty Name="semester" ColumnName="semester" />
                 <ScalarProperty Name="isRegistered" ColumnName="isRegistered" />
                 <ScalarProperty Name="no_players" ColumnName="no_players" />
-                <ScalarProperty Name="wins" ColumnName="wins" />
-                <ScalarProperty Name="losses" ColumnName="losses" />
                 <ScalarProperty Name="user_id" ColumnName="user_id" />
                 <ScalarProperty Name="sport_id" ColumnName="sport_id" />
               </MappingFragment>

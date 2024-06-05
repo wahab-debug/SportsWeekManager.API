@@ -9,6 +9,7 @@
 
 namespace SportsWeekManager.API.Models
 {
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     
@@ -26,9 +27,9 @@ namespace SportsWeekManager.API.Models
         public Nullable<int> user_id { get; set; }
         public Nullable<System.DateTime> start_date { get; set; }
         public Nullable<System.DateTime> end_date { get; set; }
-    
-        public virtual User User { get; set; }
+
+        [JsonIgnore]public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Sport> Sports { get; set; }
+        [JsonIgnore]public virtual ICollection<Sport> Sports { get; set; }
     }
 }
