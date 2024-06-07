@@ -10,7 +10,7 @@ namespace SportWeekManagementAPI.Controllers
 {
     public class UserController : ApiController
     {
-        SportsManagementDBEntities db = new SportsManagementDBEntities();
+        SportsWeekManagementEntities db = new SportsWeekManagementEntities();
 
         [HttpGet]
 

@@ -13,10 +13,10 @@ namespace SportWeekManagementAPI.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class SportsManagementDBEntities : DbContext
+    public partial class SportsWeekManagementEntities : DbContext
     {
-        public SportsManagementDBEntities()
-            : base("name=SportsManagementDBEntities")
+        public SportsWeekManagementEntities()
+            : base("name=SportsWeekManagementEntities")
         {
         }
     
@@ -25,10 +25,13 @@ namespace SportWeekManagementAPI.Models
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<Comment> Comments { get; set; }
         public virtual DbSet<Event> Events { get; set; }
+        public virtual DbSet<favourite> favourites { get; set; }
         public virtual DbSet<gallery> galleries { get; set; }
         public virtual DbSet<Match> Matches { get; set; }
         public virtual DbSet<Player> Players { get; set; }
+        public virtual DbSet<Playerteaminfo> Playerteaminfoes { get; set; }
         public virtual DbSet<Schedule> Schedules { get; set; }
         public virtual DbSet<Sport> Sports { get; set; }
         public virtual DbSet<Team> Teams { get; set; }

@@ -14,11 +14,17 @@ namespace SportWeekManagementAPI.Models
     
     public partial class Player
     {
-        public string name { get; set; }
-        public int reg_number { get; set; }
-        public string role { get; set; }
-        public Nullable<int> team_id { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Player()
+        {
+            this.Playerteaminfoes = new HashSet<Playerteaminfo>();
+        }
     
-        public virtual Team Team { get; set; }
+        public string name { get; set; }
+        public string reg_number { get; set; }
+        public string role { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Playerteaminfo> Playerteaminfoes { get; set; }
     }
 }

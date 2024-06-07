@@ -10,7 +10,7 @@ namespace SportWeekManagementAPI.Controllers
 {
     public class ScheduleController : ApiController
     {
-        SportsManagementDBEntities db = new SportsManagementDBEntities();
+        SportsWeekManagementEntities db = new SportsWeekManagementEntities();
 
         [HttpGet]
         public HttpResponseMessage AllSchedules()
@@ -58,6 +58,8 @@ namespace SportWeekManagementAPI.Controllers
             }
         }
 
+
+
         [HttpPost]
         public HttpResponseMessage ModifySchedule(Schedule schedule)
         {
@@ -102,7 +104,7 @@ namespace SportWeekManagementAPI.Controllers
             }
             catch (Exception ex)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.InnerException.Message);
             }
         }
 

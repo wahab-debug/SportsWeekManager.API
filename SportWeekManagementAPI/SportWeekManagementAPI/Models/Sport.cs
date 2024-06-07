@@ -18,6 +18,7 @@ namespace SportWeekManagementAPI.Models
         public Sport()
         {
             this.Matches = new HashSet<Match>();
+            this.Playerteaminfoes = new HashSet<Playerteaminfo>();
             this.Teams = new HashSet<Team>();
         }
     
@@ -32,6 +33,8 @@ namespace SportWeekManagementAPI.Models
         public virtual Event Event { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Match> Matches { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Playerteaminfo> Playerteaminfoes { get; set; }
         public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Team> Teams { get; set; }

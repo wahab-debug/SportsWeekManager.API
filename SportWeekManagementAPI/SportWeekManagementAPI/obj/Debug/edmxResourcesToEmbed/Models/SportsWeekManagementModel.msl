@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="SportsWeekManagementModelStoreContainer" CdmEntityContainer="SportsWeekManagementEntities">
+    <EntitySetMapping Name="Comments">
+      <EntityTypeMapping TypeName="SportsWeekManagementModel.Comment">
+        <MappingFragment StoreEntitySet="Comment">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="description" ColumnName="description" />
+          <ScalarProperty Name="user_id" ColumnName="user_id" />
+          <ScalarProperty Name="match_id" ColumnName="match_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Events">
+      <EntityTypeMapping TypeName="SportsWeekManagementModel.Event">
+        <MappingFragment StoreEntitySet="Event">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="eventname" ColumnName="eventname" />
+          <ScalarProperty Name="year" ColumnName="year" />
+          <ScalarProperty Name="user_id" ColumnName="user_id" />
+          <ScalarProperty Name="start_date" ColumnName="start_date" />
+          <ScalarProperty Name="end_date" ColumnName="end_date" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="favourites">
+      <EntityTypeMapping TypeName="SportsWeekManagementModel.favourite">
+        <MappingFragment StoreEntitySet="favourites">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="user_id" ColumnName="user_id" />
+          <ScalarProperty Name="match_id" ColumnName="match_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="galleries">
+      <EntityTypeMapping TypeName="SportsWeekManagementModel.gallery">
+        <MappingFragment StoreEntitySet="gallery">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="path" ColumnName="path" />
+          <ScalarProperty Name="match_id" ColumnName="match_id" />
+          <ScalarProperty Name="Date" ColumnName="Date" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Matches">
+      <EntityTypeMapping TypeName="SportsWeekManagementModel.Match">
+        <MappingFragment StoreEntitySet="Match">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="first_half_score" ColumnName="first_half_score" />
+          <ScalarProperty Name="second_half_score" ColumnName="second_half_score" />
+          <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="sport_id" ColumnName="sport_id" />
+          <ScalarProperty Name="round" ColumnName="round" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Players">
+      <EntityTypeMapping TypeName="SportsWeekManagementModel.Player">
+        <MappingFragment StoreEntitySet="Player">
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="reg_number" ColumnName="reg_number" />
+          <ScalarProperty Name="role" ColumnName="role" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Playerteaminfoes">
+      <EntityTypeMapping TypeName="SportsWeekManagementModel.Playerteaminfo">
+        <MappingFragment StoreEntitySet="Playerteaminfo">
+          <ScalarProperty Name="player_regno" ColumnName="player_regno" />
+          <ScalarProperty Name="sport_id" ColumnName="sport_id" />
+          <ScalarProperty Name="team_id" ColumnName="team_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Schedules">
+      <EntityTypeMapping TypeName="SportsWeekManagementModel.Schedule">
+        <MappingFragment StoreEntitySet="Schedule">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="team1_id" ColumnName="team1_id" />
+          <ScalarProperty Name="team2_id" ColumnName="team2_id" />
+          <ScalarProperty Name="match_id" ColumnName="match_id" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="time" ColumnName="time" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Sports">
+      <EntityTypeMapping TypeName="SportsWeekManagementModel.Sport">
+        <MappingFragment StoreEntitySet="Sport">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="cric_over" ColumnName="cric_over" />
+          <ScalarProperty Name="cric_ball" ColumnName="cric_ball" />
+          <ScalarProperty Name="user_id" ColumnName="user_id" />
+          <ScalarProperty Name="event_id" ColumnName="event_id" />
+          <ScalarProperty Name="rule" ColumnName="rule" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Teams">
+      <EntityTypeMapping TypeName="SportsWeekManagementModel.Team">
+        <MappingFragment StoreEntitySet="Team">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="semester" ColumnName="semester" />
+          <ScalarProperty Name="isRegistered" ColumnName="isRegistered" />
+          <ScalarProperty Name="no_players" ColumnName="no_players" />
+          <ScalarProperty Name="user_id" ColumnName="user_id" />
+          <ScalarProperty Name="sport_id" ColumnName="sport_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Users">
+      <EntityTypeMapping TypeName="SportsWeekManagementModel.User">
+        <MappingFragment StoreEntitySet="Users">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="registration_no" ColumnName="registration_no" />
+          <ScalarProperty Name="password" ColumnName="password" />
+          <ScalarProperty Name="role" ColumnName="role" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="venues">
+      <EntityTypeMapping TypeName="SportsWeekManagementModel.venue">
+        <MappingFragment StoreEntitySet="venue">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="schedule_id" ColumnName="schedule_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

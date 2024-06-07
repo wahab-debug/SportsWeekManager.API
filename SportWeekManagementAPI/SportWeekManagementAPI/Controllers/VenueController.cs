@@ -10,7 +10,7 @@ namespace SportWeekManagementAPI.Controllers
 {
     public class VenueController : ApiController
     {
-        SportsManagementDBEntities db = new SportsManagementDBEntities();
+        SportsWeekManagementEntities db = new SportsWeekManagementEntities();
 
         [HttpGet]
         public HttpResponseMessage AllVenues()
@@ -23,7 +23,6 @@ namespace SportWeekManagementAPI.Controllers
                                          {
                                              v.id,
                                              v.name,
-                                             v.schedule_id
 
 
                                          })
@@ -115,7 +114,6 @@ namespace SportWeekManagementAPI.Controllers
                                          {
                                              s.id,
                                              s.name,
-                                             s.schedule_id
 
                                          })
                                          .OrderBy(b => b.id)

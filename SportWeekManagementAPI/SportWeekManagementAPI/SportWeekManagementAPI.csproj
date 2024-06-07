@@ -208,6 +208,8 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\RegistrationController.cs" />
+    <Compile Include="Controllers\RulesController.cs" />
     <Compile Include="Controllers\ScheduleController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
@@ -217,48 +219,57 @@
     </Compile>
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\Comment.cs">
+      <DependentUpon>SportsWeekManagementModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Event.cs">
-      <DependentUpon>SportWeekManagementModel.tt</DependentUpon>
+      <DependentUpon>SportsWeekManagementModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\favourite.cs">
+      <DependentUpon>SportsWeekManagementModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\gallery.cs">
-      <DependentUpon>SportWeekManagementModel.tt</DependentUpon>
+      <DependentUpon>SportsWeekManagementModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\Match.cs">
-      <DependentUpon>SportWeekManagementModel.tt</DependentUpon>
+      <DependentUpon>SportsWeekManagementModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Player.cs">
-      <DependentUpon>SportWeekManagementModel.tt</DependentUpon>
+      <DependentUpon>SportsWeekManagementModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Playerteaminfo.cs">
+      <DependentUpon>SportsWeekManagementModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Schedule.cs">
-      <DependentUpon>SportWeekManagementModel.tt</DependentUpon>
+      <DependentUpon>SportsWeekManagementModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Sport.cs">
-      <DependentUpon>SportWeekManagementModel.tt</DependentUpon>
+      <DependentUpon>SportsWeekManagementModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\SportWeekManagementModel.Context.cs">
+    <Compile Include="Models\SportsWeekManagementModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>SportWeekManagementModel.Context.tt</DependentUpon>
+      <DependentUpon>SportsWeekManagementModel.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\SportWeekManagementModel.cs">
+    <Compile Include="Models\SportsWeekManagementModel.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>SportWeekManagementModel.tt</DependentUpon>
+      <DependentUpon>SportsWeekManagementModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\SportWeekManagementModel.Designer.cs">
+    <Compile Include="Models\SportsWeekManagementModel.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>SportWeekManagementModel.edmx</DependentUpon>
+      <DependentUpon>SportsWeekManagementModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\Team.cs">
-      <DependentUpon>SportWeekManagementModel.tt</DependentUpon>
+      <DependentUpon>SportsWeekManagementModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\User.cs">
-      <DependentUpon>SportWeekManagementModel.tt</DependentUpon>
+      <DependentUpon>SportsWeekManagementModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\venue.cs">
-      <DependentUpon>SportWeekManagementModel.tt</DependentUpon>
+      <DependentUpon>SportsWeekManagementModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
@@ -272,15 +283,15 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
-    <Content Include="Models\SportWeekManagementModel.Context.tt">
+    <Content Include="Models\SportsWeekManagementModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>SportWeekManagementModel.edmx</DependentUpon>
-      <LastGenOutput>SportWeekManagementModel.Context.cs</LastGenOutput>
+      <DependentUpon>SportsWeekManagementModel.edmx</DependentUpon>
+      <LastGenOutput>SportsWeekManagementModel.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\SportWeekManagementModel.tt">
+    <Content Include="Models\SportsWeekManagementModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>SportWeekManagementModel.edmx</DependentUpon>
-      <LastGenOutput>SportWeekManagementModel.cs</LastGenOutput>
+      <DependentUpon>SportsWeekManagementModel.edmx</DependentUpon>
+      <LastGenOutput>SportsWeekManagementModel.cs</LastGenOutput>
     </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -303,12 +314,12 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\CollectionModelDescription.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
-    <EntityDeploy Include="Models\SportWeekManagementModel.edmx">
+    <EntityDeploy Include="Models\SportsWeekManagementModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>SportWeekManagementModel.Designer.cs</LastGenOutput>
+      <LastGenOutput>SportsWeekManagementModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="Models\SportWeekManagementModel.edmx.diagram">
-      <DependentUpon>SportWeekManagementModel.edmx</DependentUpon>
+    <Content Include="Models\SportsWeekManagementModel.edmx.diagram">
+      <DependentUpon>SportsWeekManagementModel.edmx</DependentUpon>
     </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

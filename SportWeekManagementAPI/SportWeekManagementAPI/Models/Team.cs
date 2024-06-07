@@ -17,7 +17,7 @@ namespace SportWeekManagementAPI.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Team()
         {
-            this.Players = new HashSet<Player>();
+            this.Playerteaminfoes = new HashSet<Playerteaminfo>();
             this.Schedules = new HashSet<Schedule>();
             this.Schedules1 = new HashSet<Schedule>();
         }
@@ -27,13 +27,11 @@ namespace SportWeekManagementAPI.Models
         public string semester { get; set; }
         public Nullable<int> isRegistered { get; set; }
         public Nullable<int> no_players { get; set; }
-        public Nullable<int> wins { get; set; }
-        public Nullable<int> losses { get; set; }
         public Nullable<int> user_id { get; set; }
         public Nullable<int> sport_id { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Player> Players { get; set; }
+        public virtual ICollection<Playerteaminfo> Playerteaminfoes { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Schedule> Schedules { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

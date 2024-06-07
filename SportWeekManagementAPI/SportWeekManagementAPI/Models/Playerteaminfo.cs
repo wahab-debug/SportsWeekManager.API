@@ -12,13 +12,14 @@ namespace SportWeekManagementAPI.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class gallery
+    public partial class Playerteaminfo
     {
-        public int id { get; set; }
-        public string path { get; set; }
-        public Nullable<int> match_id { get; set; }
-        public Nullable<System.DateTime> Date { get; set; }
+        public string player_regno { get; set; }
+        public int sport_id { get; set; }
+        public Nullable<int> team_id { get; set; }
     
-        public virtual Match Match { get; set; }
+        public virtual Player Player { get; set; }
+        public virtual Sport Sport { get; set; }
+        public virtual Team Team { get; set; }
     }
 }
