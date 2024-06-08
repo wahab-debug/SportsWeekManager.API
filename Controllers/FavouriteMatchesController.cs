@@ -45,21 +45,46 @@ namespace SportsWeekManager.API.Controllers
 
         /*add to favourite list*/
         [HttpPost]
-        public HttpResponseMessage addfav(favourite fav) 
+        public HttpResponseMessage addFav(favourite favourite)
         {
-            try 
-            {                
-                db.favourites.Add(fav);
-                // Save changes to the database
-                db.SaveChanges();
-                return Request.CreateResponse(HttpStatusCode.OK, fav.id);
-            }
-            catch(Exception ex) 
+            try
             {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError,ex.Message);
+                var favourites = db.favourites.Add(favourite);
+                db.SaveChanges();
+
+                return Request.CreateResponse(HttpStatusCode.OK, favourites.user_id);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
-        
+
+
+        /*remove to favourite list*/
+        [HttpDelete]
+        public HttpResponseMessage RemoveFav(int userId, int matchId)
+        {
+            try
+            {
+                var favourite = db.favourites.SingleOrDefault(f => f.user_id == userId && f.match_id == matchId);
+
+                if (favourite == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, "Favorite not found.");
+                }
+
+                db.favourites.Remove(favourite);
+                db.SaveChanges();
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Favorite removed successfully.");
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
 
     }
 }
