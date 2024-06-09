@@ -10,30 +10,93 @@ namespace SportsWeekManager.API.Controllers
 {
     public class MatchesController : ApiController
     {
-        SportsManagementDBEntities db = new SportsManagementDBEntities(); 
-                /*        Read all matches with name*/ 
-        [HttpGet]
-        public HttpResponseMessage getMatch() 
-        {
-            try 
-            {
-                var matches = db.Matches.Select(m=>new{
+        SportsManagementDBEntities db = new SportsManagementDBEntities();
+        /*        Read Cricet matches with scores against team name*/
+        /* [HttpGet]
+         public HttpResponseMessage getCricketMatch()
+         {
+             try
+             {
+                 var matches = db.Matches
+              .Where(m => m.Sport.name == "Cricket") // Filter only cricket matches
+              .Join(
+                  db.Schedules,
+                  m => m.id,
+                  s => s.match_id,
+                  (m, s) => new { Match = m, Schedule = s }
+              )
+              .Join(
+                  db.Teams,
+                  ms => ms.Schedule.team1_id,
+                  t1 => t1.id,
+                  (ms, t1) => new { ms.Match, ms.Schedule, Team1 = t1 }
+              )
+              .Join(
+                  db.Teams,
+                  mst1 => mst1.Schedule.team2_id,
+                  t2 => t2.id,
+                  (mst1, t2) => new
+                  {
+                      Status = mst1.Match.status,
+                      FirstHalfScore = mst1.Match.first_half_score, // First half score belongs to Team1
+                      SecondHalfScore = mst1.Match.second_half_score, // Second half score belongs to Team2
+                      SportName = mst1.Match.Sport.name,
+                      Team1Name = mst1.Team1.name,
+                      Team2Name = t2.name,
+                      mst1.Schedule.date,
+                      mst1.Schedule.time
+                  }
+              )
+              .ToList();
 
-                    m.status,
-                    m.first_half_score,
-                    m.second_half_score,
-                   
-                    m.Sport.name
-                 
-                }).ToList();
+                 return Request.CreateResponse(HttpStatusCode.OK, matches);
+             }
+             catch (Exception ex)
+             {
+                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+             }
+         }*/
+        /*        Read All matches */
+        [HttpGet]
+        public HttpResponseMessage getMatch()
+        {
+            try
+            {
+
+                var matches = from m in db.Matches
+                              join s in db.Schedules on m.id equals s.match_id
+                              join t1 in db.Teams on s.team1_id equals t1.id
+                              join t2 in db.Teams on s.team2_id equals t2.id
+                              join sp in db.Sports on m.sport_id equals sp.id
+                              join v in db.venues on s.id equals v.schedule_id
+                              join e in db.Events on sp.event_id equals e.id
+                              select new
+                              {
+                                  MatchId = m.id,
+                                  Team1Name = t1.name,
+                                  FirstHalfScore = m.first_half_score,
+                                  Team2Name = t2.name,
+                                  SecondHalfScore = m.second_half_score,
+                                  Status = m.status,
+                                  SportName = sp.name,
+                                  Round = m.round,
+                                  Date = s.date,
+                                  Time = s.time,
+                                  VenueName = v.name,
+                                  EventName = e.eventname,
+                                  Year = e.year
+                              };
+
                 return Request.CreateResponse(HttpStatusCode.OK, matches);
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
-            } 
-            
+            }
         }
+
+
+
 
         /*Create match*/
         [HttpPost]
