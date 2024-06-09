@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Claims;
+using System.Web;
 using System.Web.Http;
 
 namespace SportsWeekManager.API.Controllers
@@ -94,26 +96,101 @@ namespace SportsWeekManager.API.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+        [HttpGet]
+        public HttpResponseMessage getallMatch()
+        {
+            try
+            {
+                var matches = db.Matches
+                    .Select(m => new
+                    {
+                        m.status,
+                        Team1Name = db.Teams.FirstOrDefault(t => t.id == m.Schedules.FirstOrDefault().team1_id).name,
+                        Team2Name = db.Teams.FirstOrDefault(t => t.id == m.Schedules.FirstOrDefault().team2_id).name,
+                        Team1Score = m.Sport.name.Equals("Cricket", StringComparison.OrdinalIgnoreCase) ? m.first_half_score : m.second_half_score,
+                        Team2Score = m.second_half_score,
+                        SportName = m.Sport.name,
+                       
+                     /*   Date = m.Schedules.FirstOrDefault().date,
+                        Time = m.Schedules.FirstOrDefault().time*/
+                    })
+                    .ToList();
+
+                return Request.CreateResponse(HttpStatusCode.OK, matches);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
 
 
 
 
         /*Create match*/
         [HttpPost]
-        public HttpResponseMessage addmatch(Match match)
+        public HttpResponseMessage addMatch(Match match)
         {
-            
-                try
-                {
-                    db.Matches.Add(match);
-                    db.SaveChanges();
-                    return Request.CreateResponse(HttpStatusCode.OK, match.id);
-                }
-                catch (Exception ex)
-                {
-                    return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
-                }
+            try
+            {
+                var matchlist = db.Matches.Add(match);
+                db.SaveChanges();
+
+                return Request.CreateResponse(HttpStatusCode.OK, match.id);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
         }
+        /* public HttpResponseMessage AddMatch(Match match, int userId)
+         {
+             try
+             {
+                 // Check if the user is an event manager
+                 var user = db.Users.FirstOrDefault(u => u.id == userId && u.role == "event manager");
+                 if (user == null)
+                 {
+                     return Request.CreateResponse(HttpStatusCode.OK, "User is not authorized to add matches.");
+                 }
+
+                 // Check if the user is assigned to the specific sport
+                 var sport = db.Sports.FirstOrDefault(s => s.id == match.sport_id && s.user_id == userId);
+                 if (sport == null)
+                 {
+                     return Request.CreateResponse(HttpStatusCode.Forbidden, "User is not authorized to add matches for this sport.");
+                 }
+
+                 // Add the match to the database
+                 db.Matches.Add(match);
+                 db.SaveChanges();
+
+                 // Get the first related schedule (if available)
+                 //var firstSchedule = match.Schedules.FirstOrDefault();
+
+                 // Add the match to the schedule
+                 if (firstSchedule != null)
+                 {
+                     Schedule newSchedule = new Schedule
+                     {
+                         team1_id = firstSchedule.team1_id,
+                         team2_id = firstSchedule.team2_id,
+                         match_id = match.id,
+                         date = firstSchedule.date,
+                         time = firstSchedule.time
+                     };
+
+                     db.Schedules.Add(newSchedule);
+                     db.SaveChanges();
+                 }
+
+                 return Request.CreateResponse(HttpStatusCode.OK, match.id);
+             }
+             catch (Exception ex)
+             {
+                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+             }
+         }*/
 
         /*Update match */
         [HttpPost]
