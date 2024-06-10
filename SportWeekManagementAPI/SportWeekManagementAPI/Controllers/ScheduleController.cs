@@ -18,46 +18,93 @@ namespace SportWeekManagementAPI.Controllers
 
             try
             {
-                var schedule = db.Schedules
-                                         .Select(s => new
-                                         {
-                                             s.id,
-                                             s.team1_id,
-                                             s.team2_id,
-                                             s.match_id,
-                                             s.date,
-                                             s.time
+                var schedules = from schedule in db.Schedules
+                                join match in db.Matches on schedule.match_id equals match.id
+                                join team1 in db.Teams on schedule.team1_id equals team1.id
+                                join team2 in db.Teams on schedule.team2_id equals team2.id
+                                join sport in db.Sports on match.sport_id equals sport.id
+                                select new
+                                {
+                                    Team1Name = team1.name,
+                                    Team2Name = team2.name,
+                                    MatchId = match.id,
+                                    MatchRound = match.round,
+                                    SportName = sport.name,
+                                    Date = schedule.date,
+                                    Time = schedule.time
+                                };
 
-                                         })
-                                         .OrderBy(b => b.id)
-                                         .ToList();
-                return Request.CreateResponse(HttpStatusCode.OK, schedule);
-
+                return Request.CreateResponse(HttpStatusCode.OK, schedules.ToList());
             }
             catch (Exception ex)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
 
-        [HttpPost]
-        public HttpResponseMessage InsertSchedule(Schedule schedule)
+        private bool IsEventManager(int userId)
         {
-
+            var user = db.Users.SingleOrDefault(u => u.id == userId);
+            return user != null && user.role == "event manager";
+        }
+        [HttpPut]
+        public HttpResponseMessage addSchedule(int userId, Schedule schedule)
+        {
             try
             {
+                // Check if the schedule parameter is null
+                if (schedule == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Schedule cannot be null.");
+                }
+
+                // Retrieve the user from the database
+                var user = db.Users.FirstOrDefault(u => u.id == userId);
+                if (user == null || user.role != "event manager")
+                {
+                    return Request.CreateResponse(HttpStatusCode.Forbidden, "User is not authorized to create schedules.");
+                }
+
+                // Retrieve the sport managed by the event manager
+                var sportManaged = db.Sports.FirstOrDefault(s => s.user_id == userId);
+                if (sportManaged == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.Forbidden, "User does not manage any sport.");
+                }
+
+                // Retrieve the teams involved in the schedule
+                var team1 = db.Teams.FirstOrDefault(t => t.id == schedule.team1_id);
+                var team2 = db.Teams.FirstOrDefault(t => t.id == schedule.team2_id);
+
+                if (team1 == null || team2 == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "One or both teams do not exist.");
+                }
+
+                // Check if the teams belong to the sport managed by the event manager
+                if (team1.sport_id != sportManaged.id || team2.sport_id != sportManaged.id)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Teams must belong to the sport managed by the event manager.");
+                }
+
+                // Check if the match ID is already scheduled
+                var existingSchedule = db.Schedules.FirstOrDefault(s => s.match_id == schedule.match_id);
+                if (existingSchedule != null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "This match is already scheduled.");
+                }
+
+                // Add the schedule
                 db.Schedules.Add(schedule);
                 db.SaveChanges();
-                return Request.CreateResponse(HttpStatusCode.OK, "Data Insert at" + schedule.id);
 
-
+                return Request.CreateResponse(HttpStatusCode.OK, schedule.id);
             }
             catch (Exception ex)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
-
 
 
         [HttpPost]
