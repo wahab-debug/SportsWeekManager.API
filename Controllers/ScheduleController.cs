@@ -106,10 +106,9 @@ namespace SportsWeekManager.API.Controllers
 
 
 
-        [HttpGet]
+        [HttpDelete]
         public HttpResponseMessage DeleteSchedule(int id)
         {
-
             try
             {
                 var original = db.Schedules.Find(id);
@@ -117,12 +116,20 @@ namespace SportsWeekManager.API.Controllers
                 {
                     return Request.CreateResponse(HttpStatusCode.InternalServerError, "Schedule not found");
                 }
+
+                // Remove match ID from Matches table
+                var matchId = original.match_id;
+                var matchToRemove = db.Matches.FirstOrDefault(m => m.id == matchId);
+                if (matchToRemove != null)
+                {
+                    db.Matches.Remove(matchToRemove);
+                }
+
+                // Delete schedule
                 db.Entry(original).State = System.Data.Entity.EntityState.Deleted;
                 db.SaveChanges();
-                return Request.CreateResponse(HttpStatusCode.OK, "Schedule Deleted");
 
-
-
+                return Request.CreateResponse(HttpStatusCode.OK, "Schedule and associated match deleted");
             }
             catch (Exception ex)
             {
