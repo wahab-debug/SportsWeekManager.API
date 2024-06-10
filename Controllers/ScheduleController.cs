@@ -58,15 +58,22 @@ namespace SportsWeekManager.API.Controllers
         }
 
         /*add schedule with userid and schedule parameter*/
-        [HttpPost]
-        public HttpResponseMessage UpdateMatch(int userId, Match match)
+        [HttpPut]
+        public HttpResponseMessage addSchedule(int userId, Schedule schedule)
         {
             try
             {
-                var original = db.Matches.Find(match.id);
-                if (original == null)
+                // Check if the schedule parameter is null
+                if (schedule == null)
                 {
-                    return Request.CreateResponse(HttpStatusCode.InternalServerError, "Match not found");
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Schedule cannot be null.");
+                }
+
+                // Retrieve the user from the database
+                var user = db.Users.FirstOrDefault(u => u.id == userId);
+                if (user == null || user.role != "event manager")
+                {
+                    return Request.CreateResponse(HttpStatusCode.Forbidden, "User is not authorized to create schedules.");
                 }
 
                 // Retrieve the sport managed by the event manager
@@ -76,33 +83,60 @@ namespace SportsWeekManager.API.Controllers
                     return Request.CreateResponse(HttpStatusCode.Forbidden, "User does not manage any sport.");
                 }
 
-                // Retrieve the sport of the match being updated
-                var matchSport = db.Sports.FirstOrDefault(s => s.id == original.sport_id);
-                if (matchSport == null)
+                // Retrieve the teams involved in the schedule
+                var team1 = db.Teams.FirstOrDefault(t => t.id == schedule.team1_id);
+                var team2 = db.Teams.FirstOrDefault(t => t.id == schedule.team2_id);
+
+                if (team1 == null || team2 == null)
                 {
-                    return Request.CreateResponse(HttpStatusCode.InternalServerError, "Sport of the match not found.");
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "One or both teams do not exist.");
                 }
 
-                // Check if the event manager manages the sport of the match
-                if (sportManaged.id != matchSport.id)
+                // Check if the teams belong to the sport managed by the event manager
+                if (team1.sport_id != sportManaged.id || team2.sport_id != sportManaged.id)
                 {
-                    return Request.CreateResponse(HttpStatusCode.Forbidden, "Event manager does not manage the sport of the match.");
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Teams must belong to the sport managed by the event manager.");
                 }
 
-                // Update only if the field is provided
-                if (match.first_half_score != null) original.first_half_score = match.first_half_score;
-                if (match.second_half_score != null) original.second_half_score = match.second_half_score;
-                if (match.status != null) original.status = match.status;
-                if (match.round != null) original.round = match.round;
+                // Check if the match ID is already scheduled
+                var existingSchedule = db.Schedules.FirstOrDefault(s => s.match_id == schedule.match_id);
+                if (existingSchedule != null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "This match is already scheduled.");
+                }
 
+                // Create a new match
+                var match = new Match
+                {
+                    status = "yet to play",
+                    sport_id = sportManaged.id // Assuming sport id needs to be set
+                };
+                db.Matches.Add(match);
                 db.SaveChanges();
-                return Request.CreateResponse(HttpStatusCode.OK, "Match Updated");
+
+                // Log the match ID for debugging purposes
+                var matchId = match.id;
+                System.Diagnostics.Debug.WriteLine($"New match created with ID: {matchId}");
+
+                // Update the schedule's match ID
+                schedule.match_id = match.id;
+
+                // Add the schedule
+                db.Schedules.Add(schedule);
+                db.SaveChanges();
+
+                // Log the schedule ID for debugging purposes
+                var scheduleId = schedule.id;
+                System.Diagnostics.Debug.WriteLine($"New schedule created with ID: {scheduleId}");
+
+                return Request.CreateResponse(HttpStatusCode.OK, schedule.id);
             }
             catch (Exception ex)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
 
 
 
