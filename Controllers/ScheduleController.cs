@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Web.Http;
+using Match = SportsWeekManager.API.Models.Match;
 
 namespace SportsWeekManager.API.Controllers
 {
@@ -55,42 +57,78 @@ namespace SportsWeekManager.API.Controllers
             }
         }
 
-        /*function to check the role of user id and furthur use in schedule create*/
-        private bool IsEventManager(int userId)
-        {
-            var user = db.Users.SingleOrDefault(u => u.id == userId);
-            return user != null && user.role == "event manager";
-        }
-        /*add new schedule just for event manager*/
-        [HttpPut]
-        public HttpResponseMessage addSchedule(int userId, Schedule schedule)
+        /*add schedule with userid and schedule parameter*/
+        [HttpPost]
+        public HttpResponseMessage UpdateMatch(int userId, Match match)
         {
             try
             {
-                // Check if the schedule parameter is null
-                if (schedule == null)
+                var original = db.Matches.Find(match.id);
+                if (original == null)
                 {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Schedule cannot be null.");
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, "Match not found");
                 }
 
-                // Check if the user is an event manager
-                if (!IsEventManager(userId))
+                // Retrieve the sport managed by the event manager
+                var sportManaged = db.Sports.FirstOrDefault(s => s.user_id == userId);
+                if (sportManaged == null)
                 {
-                    return Request.CreateResponse(HttpStatusCode.Forbidden, "User is not authorized to create schedules.");
+                    return Request.CreateResponse(HttpStatusCode.Forbidden, "User does not manage any sport.");
                 }
 
-                // Add the schedule
-                db.Schedules.Add(schedule);
+                // Retrieve the sport of the match being updated
+                var matchSport = db.Sports.FirstOrDefault(s => s.id == original.sport_id);
+                if (matchSport == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, "Sport of the match not found.");
+                }
+
+                // Check if the event manager manages the sport of the match
+                if (sportManaged.id != matchSport.id)
+                {
+                    return Request.CreateResponse(HttpStatusCode.Forbidden, "Event manager does not manage the sport of the match.");
+                }
+
+                // Update only if the field is provided
+                if (match.first_half_score != null) original.first_half_score = match.first_half_score;
+                if (match.second_half_score != null) original.second_half_score = match.second_half_score;
+                if (match.status != null) original.status = match.status;
+                if (match.round != null) original.round = match.round;
+
                 db.SaveChanges();
-
-                return Request.CreateResponse(HttpStatusCode.OK, schedule.id);
+                return Request.CreateResponse(HttpStatusCode.OK, "Match Updated");
             }
             catch (Exception ex)
             {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
 
+
+
+        [HttpGet]
+        public HttpResponseMessage DeleteSchedule(int id)
+        {
+
+            try
+            {
+                var original = db.Schedules.Find(id);
+                if (original == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, "Schedule not found");
+                }
+                db.Entry(original).State = System.Data.Entity.EntityState.Deleted;
+                db.SaveChanges();
+                return Request.CreateResponse(HttpStatusCode.OK, "Schedule Deleted");
+
+
+
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.InnerException.Message);
+            }
+        }
 
 
     }

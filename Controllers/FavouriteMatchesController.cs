@@ -11,13 +11,13 @@ namespace SportsWeekManager.API.Controllers
     public class FavouriteMatchesController : ApiController
     {
         SportsManagementDBEntities db = new SportsManagementDBEntities();
-        /*get all favourite list of user*/
+        /*get all favourite list of user on id base. pass id of user*/
         [HttpGet]
         public HttpResponseMessage getFavlist(int id)
         {
             try
             {
-                var favlist = db.favourites
+             var favlist = db.favourites
             .Where(f => f.user_id == id)
             .Join(
                 db.Matches,
@@ -77,7 +77,7 @@ namespace SportsWeekManager.API.Controllers
         }
 
 
-        /*add to favourite list*/
+        /*add to favourite list. add sport_id and match_id checks if ids are valid and also check fav already exit*/
         [HttpPost]
         public HttpResponseMessage AddFavourite(favourite favourite)
         {
@@ -92,7 +92,11 @@ namespace SportsWeekManager.API.Controllers
                 // Check if the favourite already exists
                 var existingFavourite = db.favourites
                     .FirstOrDefault(f => f.user_id == favourite.user_id && f.match_id == favourite.match_id);
-
+                var checkMatchId = db.Matches.Find(favourite.match_id);
+                if (checkMatchId==null) 
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, "Match not found enter valid match");
+                }
                 if (existingFavourite != null)
                 {
                     return Request.CreateResponse(HttpStatusCode.Conflict, "This match is already favourited by the user.");
@@ -112,7 +116,7 @@ namespace SportsWeekManager.API.Controllers
         }
 
 
-        /*remove to favourite list*/
+        /*remove from favourite list user_id and match_id checks if ids are valid */
         [HttpDelete]
         public HttpResponseMessage RemoveFav(int userId, int matchId)
         {

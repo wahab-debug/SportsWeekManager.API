@@ -15,6 +15,8 @@ namespace SportsWeekManager.API.Models
     
     public partial class Match
     {
+        internal readonly DateTime? date;
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Match()
         {

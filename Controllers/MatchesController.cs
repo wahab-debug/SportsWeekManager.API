@@ -13,51 +13,7 @@ namespace SportsWeekManager.API.Controllers
     public class MatchesController : ApiController
     {
         SportsManagementDBEntities db = new SportsManagementDBEntities();
-        /*        Read Cricet matches with scores against team name*/
-        /* [HttpGet]
-         public HttpResponseMessage getCricketMatch()
-         {
-             try
-             {
-                 var matches = db.Matches
-              .Where(m => m.Sport.name == "Cricket") // Filter only cricket matches
-              .Join(
-                  db.Schedules,
-                  m => m.id,
-                  s => s.match_id,
-                  (m, s) => new { Match = m, Schedule = s }
-              )
-              .Join(
-                  db.Teams,
-                  ms => ms.Schedule.team1_id,
-                  t1 => t1.id,
-                  (ms, t1) => new { ms.Match, ms.Schedule, Team1 = t1 }
-              )
-              .Join(
-                  db.Teams,
-                  mst1 => mst1.Schedule.team2_id,
-                  t2 => t2.id,
-                  (mst1, t2) => new
-                  {
-                      Status = mst1.Match.status,
-                      FirstHalfScore = mst1.Match.first_half_score, // First half score belongs to Team1
-                      SecondHalfScore = mst1.Match.second_half_score, // Second half score belongs to Team2
-                      SportName = mst1.Match.Sport.name,
-                      Team1Name = mst1.Team1.name,
-                      Team2Name = t2.name,
-                      mst1.Schedule.date,
-                      mst1.Schedule.time
-                  }
-              )
-              .ToList();
-
-                 return Request.CreateResponse(HttpStatusCode.OK, matches);
-             }
-             catch (Exception ex)
-             {
-                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
-             }
-         }*/
+        
         /*        Read All matches */
         [HttpGet]
         public HttpResponseMessage getMatch()
@@ -96,37 +52,7 @@ namespace SportsWeekManager.API.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
-        [HttpGet]
-        public HttpResponseMessage getallMatch()
-        {
-            try
-            {
-                var matches = db.Matches
-                    .Select(m => new
-                    {
-                        m.status,
-                        Team1Name = db.Teams.FirstOrDefault(t => t.id == m.Schedules.FirstOrDefault().team1_id).name,
-                        Team2Name = db.Teams.FirstOrDefault(t => t.id == m.Schedules.FirstOrDefault().team2_id).name,
-                        Team1Score = m.Sport.name.Equals("Cricket", StringComparison.OrdinalIgnoreCase) ? m.first_half_score : m.second_half_score,
-                        Team2Score = m.second_half_score,
-                        SportName = m.Sport.name,
-                       
-                     /*   Date = m.Schedules.FirstOrDefault().date,
-                        Time = m.Schedules.FirstOrDefault().time*/
-                    })
-                    .ToList();
-
-                return Request.CreateResponse(HttpStatusCode.OK, matches);
-            }
-            catch (Exception ex)
-            {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
-            }
-        }
-
-
-
-
+       
         /*Create match*/
         [HttpPost]
         public HttpResponseMessage addMatch(Match match)
@@ -194,28 +120,38 @@ namespace SportsWeekManager.API.Controllers
 
         /*Update match */
         [HttpPost]
-        public HttpResponseMessage updateMatch(Match match) 
+        public HttpResponseMessage UpdateMatch(Match match)
         {
-            try 
+            try
             {
-                
                 var original = db.Matches.Find(match.id);
-                if (original == null) 
+                if (original == null)
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, "match not Found");
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, "Match not found");
                 }
-                db.Entry(original).CurrentValues.SetValues(match);
+
+
+                // Update only if the field is provided
+                if (match.first_half_score != null) original.first_half_score = match.first_half_score;
+                if (match.second_half_score != null) original.second_half_score = match.second_half_score;
+                if (match.status != null) original.status = match.status;
+                if (match.sport_id != null) original.sport_id = match.sport_id; // Updated condition for sport_id
+                if (match.round != null) original.round = match.round;
+
                 db.SaveChanges();
-                return Request.CreateResponse(HttpStatusCode.OK, "match is modified");
+                return Request.CreateResponse(HttpStatusCode.OK, "Match Updated");
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
-      
+
+
+
+
         /*remove match*/
-        [HttpPost]
+        [HttpDelete]
         public HttpResponseMessage removeMatch(int id)
         {
             try
@@ -262,5 +198,7 @@ namespace SportsWeekManager.API.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
+
     }
 }
